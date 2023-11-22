@@ -1,4 +1,4 @@
-package downloader;
+package datalake.downloader;
 
 import com.hazelcast.collection.ISet;
 import com.hazelcast.core.Hazelcast;

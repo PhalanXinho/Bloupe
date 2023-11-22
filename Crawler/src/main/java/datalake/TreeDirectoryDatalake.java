@@ -1,22 +1,30 @@
 package datalake;
 
-import datalake.structure.Structure;
 import datalake.structure.TreeDirectoryStructure;
+import datalake.downloader.Downloader;
+import datalake.downloader.GutembergProjectBookDownloader;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class TreeDirectoryDatalake implements Datalake, Structure {
+public class TreeDirectoryDatalake implements Datalake, Downloader{
 
     private final Path path;
 
     public TreeDirectoryDatalake(Path path) {
         this.path = dateRegister(path);
+        new TreeDirectoryStructure(this.path).createStructure();
+
     }
 
     @Override
-    public void build() {
-        createStructure();
+    public void feed() {
+        try {
+            download();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Path dateRegister(Path root){
@@ -32,19 +40,14 @@ public class TreeDirectoryDatalake implements Datalake, Structure {
         return path;
     }
 
-    @Override
-    public void createStructure() {
-        TreeDirectoryStructure treeDirectoryStructure = new TreeDirectoryStructure(this.path);
-        treeDirectoryStructure.createStructure();
-    }
-
-    @Override
-    public Path getStructurePath() {
-        return new TreeDirectoryStructure(this.path).getStructurePath();
-    }
 
     @Override
     public Path getPath() {
-        return getStructurePath();
+        return this.path;
+    }
+
+    @Override
+    public void download() throws IOException {
+        new GutembergProjectBookDownloader(this.path).download();
     }
 }

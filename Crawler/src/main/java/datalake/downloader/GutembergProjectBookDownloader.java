@@ -1,4 +1,4 @@
-package downloader;
+package datalake.downloader;
 
 import org.apache.commons.io.FileUtils;
 
