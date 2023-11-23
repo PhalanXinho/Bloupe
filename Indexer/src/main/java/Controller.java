@@ -1,6 +1,5 @@
 import basedatabase.MetadataDatabase;
-import basedatabase.MetadataJsonConverter;
-import basedatabase.MongoDBConnection;
+import basedatabase.MetadataMongoDB;
 import com.hazelcast.map.IMap;
 import datamarthandler.*;
 import indexer.Indexer;
@@ -12,9 +11,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-public class Controller implements Datamart {
+public class Controller implements Datamart, MetadataDatabase {
     private IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map;
     private final HazelcastDatamart hzdataMart = new HazelcastDatamart();
+    private final MetadataMongoDB mongoDB = new MetadataMongoDB();
     private MetadataBuilder metadataBuilder = new MetadataBuilder();
     private final Indexer indexer = new Indexer();
 
@@ -22,8 +22,8 @@ public class Controller implements Datamart {
         map = createDatamart();
         String id = runIndexer(bookPath, map);
         Metadata bookMetadata = metadataBuilder.buildMetadata(Path.of(bookPath), id);
-        insertMetadataToMongoDB(bookMetadata);
-
+        createMetadataDatabase();
+        insertMetadata(bookMetadata);
         System.out.println(map.entrySet());
         System.out.println("The Indexing has been done.");
     }
@@ -41,21 +41,7 @@ public class Controller implements Datamart {
         }
     }
 
-    private void insertMetadataToMongoDB(Metadata bookMetadata) {
-        MongoDBConnection connection = null;
-        try {
-            connection = new MongoDBConnection("localhost", 27017, "MetadataDatabase", "metadata");
-            MetadataJsonConverter converter = new MetadataJsonConverter();
-            MetadataDatabase database = new MetadataDatabase(connection, converter);
-            database.insertMetadata(bookMetadata);
-        } catch (Exception e) {
-            System.out.println("Failed to insert metadata to MongoDB: " + e.getMessage());
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
-    }
+
 
     @Override
     public IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> createDatamart() {
@@ -66,5 +52,15 @@ public class Controller implements Datamart {
     @Override
     public void addWordToDatamart(Word word, IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map) {
         hzdataMart.addWordToDatamart(word, map);
+    }
+
+    @Override
+    public void createMetadataDatabase() {
+        mongoDB.createMetadataDatabase();
+    }
+
+    @Override
+    public void insertMetadata(Metadata bookMetadata) {
+        mongoDB.insertMetadata(bookMetadata);
     }
 }

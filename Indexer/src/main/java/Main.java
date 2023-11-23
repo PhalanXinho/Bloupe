@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         try {
-            new Controller().execute("Indexer\\src\\main\\resources\\pg71894.txt");
+            new Controller().execute("C:\\Users\\irene\\Desktop\\pg71894.txt");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
