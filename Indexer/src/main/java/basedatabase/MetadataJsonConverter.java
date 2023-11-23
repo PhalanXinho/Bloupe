@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import metadata.Metadata;
 
 public class MetadataJsonConverter {
-    private Gson gson;
+    private final Gson gson;
 
     public MetadataJsonConverter() {
         this.gson = new Gson();
