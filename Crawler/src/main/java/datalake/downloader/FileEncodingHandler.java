@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class FileEncodingHandler {
-    public void checkFileEncoding(String path) throws IOException {
+    public boolean checkFileEncoding(String path) throws IOException {
         File file = new File(path);
         DefaultDetector detector = new DefaultDetector();
         try (InputStream input = TikaInputStream.get(file)) {
@@ -18,7 +18,8 @@ public class FileEncodingHandler {
             if (!encoding.equals("text/plain")){
                 file.delete();
                 System.out.println("Deleting file: " + path + ", due to incompatible encoding");
-            }
+                return false;
+            } else return true;
         }
     }
 }

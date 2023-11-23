@@ -10,7 +10,7 @@ public class DatePathProvider {
     private final String month = new SimpleDateFormat("MM").format(new Date());
     private final String day = new SimpleDateFormat("dd").format(new Date());
 
-    public Path provideDatePath(){
+    public Path provideDatePath() {
         return Paths.get(year, month, day);
     }
 }

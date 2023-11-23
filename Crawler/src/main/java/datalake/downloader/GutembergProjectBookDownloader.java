@@ -1,5 +1,9 @@
 package datalake.downloader;
 
+import com.hazelcast.collection.IList;
+import com.hazelcast.config.Config;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -23,14 +27,23 @@ public class GutembergProjectBookDownloader implements Downloader {
     @Override
     public void download() throws IOException {
         int randInt = new RandomNumberGenerator(MAX_BOOKS).generateRandomNumber();
-        int lastDigit = Integer.parseInt(String.valueOf(randInt).
-                substring(String.valueOf(randInt).length() - 1));
-        String bookName = lastDigit + "/book" + randInt + extension;
-        String finalDirectory = String.valueOf(this.path.resolve(bookName));
+        String finalDirectory = getFinalDirectory(randInt);
         URL url = new URL(bookUrl + randInt + page + randInt + extension);
         File file = new File(finalDirectory);
         FileUtils.copyURLToFile(url, file);
         System.out.println("Downloading into: " + finalDirectory);
-        new FileEncodingHandler().checkFileEncoding(finalDirectory);
+        if (new FileEncodingHandler().checkFileEncoding(finalDirectory)) {
+            Config config = new Config();
+            HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+            IList<String> downloadedBooks = hazelcastInstance.getList("downloadedBooks");
+            downloadedBooks.add(finalDirectory);
+        }
+    }
+
+    private String getFinalDirectory(int randInt) {
+        int lastDigit = Integer.parseInt(String.valueOf(randInt).
+                substring(String.valueOf(randInt).length() - 1));
+        String bookName = lastDigit + "/book" + randInt + extension;
+        return String.valueOf(this.path.resolve(bookName));
     }
 }

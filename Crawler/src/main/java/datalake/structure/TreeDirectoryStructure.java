@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.security.InvalidParameterException;
 
 
-public class TreeDirectoryStructure{
+public class TreeDirectoryStructure {
 
     private static final Logger logger = LogManager.getLogger(TreeDirectoryStructure.class);
     private final Integer dirCapacity = 100;
@@ -75,10 +75,5 @@ public class TreeDirectoryStructure{
             }
         }
 
-    }
-
-
-    public Path getStructurePath() {
-        return this.root;
     }
 }

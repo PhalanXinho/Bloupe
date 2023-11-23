@@ -8,30 +8,29 @@ import java.util.Random;
 
 public class RandomNumberGenerator {
     private final int maxNumber;
+
     public RandomNumberGenerator(int maxNumber) {
         this.maxNumber = maxNumber;
     }
 
-    public int generateRandomNumber(){
+    public int generateRandomNumber() {
         int randInt = new Random().nextInt(maxNumber) + 1;
-        if (verifyUnicity(randInt)){
+        if (verifyUnicity(randInt)) {
             return new Random().nextInt(maxNumber) + 1;
-        }else{
+        } else {
             generateRandomNumber();
         }
         return 0;
     }
 
-    
-    private boolean verifyUnicity(int randInt){
+
+    private boolean verifyUnicity(int randInt) {
         HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance();
         ISet<Integer> usedNumbers = hazelcastInstance.getSet("usedNumbers");
-        if (usedNumbers.contains(randInt)){
-            hazelcastInstance.shutdown();
+        if (usedNumbers.contains(randInt)) {
             return false;
         } else {
             usedNumbers.add(randInt);
-            hazelcastInstance.shutdown();
             return true;
         }
     }
