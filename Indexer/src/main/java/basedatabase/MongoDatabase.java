@@ -25,4 +25,8 @@ public class MongoDatabase {
     public void drop() {
         connection.getCollection().drop();
     }
+
+    public MongoDBConnection getConnection() {
+        return connection;
+    }
 }
