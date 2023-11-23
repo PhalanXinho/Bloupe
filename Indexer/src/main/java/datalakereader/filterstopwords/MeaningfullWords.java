@@ -1,4 +1,4 @@
-package datalakereader;
+package datalakereader.filterstopwords;
 
 import java.util.HashSet;
 import java.util.Set;
