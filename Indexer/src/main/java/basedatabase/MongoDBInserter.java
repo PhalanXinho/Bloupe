@@ -7,11 +7,11 @@ import com.mongodb.client.model.Indexes;
 import metadata.Metadata;
 import org.bson.Document;
 
-public class MongoDatabaseInserter {
+public class MongoDBInserter {
     private final MongoDBConnection connection;
     private final MetadataJsonConverter converter;
 
-    public MongoDatabaseInserter(MongoDBConnection connection, MetadataJsonConverter converter) {
+    public MongoDBInserter(MongoDBConnection connection, MetadataJsonConverter converter) {
         this.connection = connection;
         this.converter = converter;
     }
