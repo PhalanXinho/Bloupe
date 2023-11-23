@@ -1,7 +1,7 @@
 package basedatabase;
 
 import com.google.gson.Gson;
-import datamarthandler.Metadata;
+import metadata.Metadata;
 
 public class MetadataJsonConverter {
     private Gson gson;

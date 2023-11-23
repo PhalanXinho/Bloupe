@@ -1,4 +1,4 @@
-package datamarthandler;
+package metadata;
 
 import java.io.File;
 import java.io.FileNotFoundException;

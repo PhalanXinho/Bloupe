@@ -1,6 +1,6 @@
 package basedatabase;
 
-import datamarthandler.Metadata;
+import metadata.Metadata;
 import org.bson.Document;
 
 public class MetadataDatabase {
