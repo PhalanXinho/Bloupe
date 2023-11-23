@@ -11,15 +11,14 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-public class Controller implements Datamart, MetadataDatabase {
-    private IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map;
+public class Controller implements DatamartHandler, MetadataDatabase {
     private final HazelcastDatamart hzdataMart = new HazelcastDatamart();
     private final MetadataMongoDB mongoDB = new MetadataMongoDB();
-    private MetadataBuilder metadataBuilder = new MetadataBuilder();
+    private final MetadataBuilder metadataBuilder = new MetadataBuilder();
     private final Indexer indexer = new Indexer();
 
-    public void execute(String bookPath) throws InterruptedException, IOException {
-        map = createDatamart();
+    public void execute(String bookPath) throws IOException {
+        IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map = createDatamart();
         String id = runIndexer(bookPath, map);
         Metadata bookMetadata = metadataBuilder.buildMetadata(Path.of(bookPath), id);
         createMetadataDatabase();
@@ -28,7 +27,7 @@ public class Controller implements Datamart, MetadataDatabase {
         System.out.println("The Indexing has been done.");
     }
 
-    private String runIndexer(String bookPath, IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map) throws InterruptedException {
+    private String runIndexer(String bookPath, IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map) {
         try {
             List<Word> wordList = indexer.invertedIndex(Path.of(bookPath));
             String bookId = wordList.get(0).id();

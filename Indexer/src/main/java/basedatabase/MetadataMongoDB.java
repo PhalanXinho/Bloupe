@@ -3,14 +3,14 @@ package basedatabase;
 import metadata.Metadata;
 
 public class MetadataMongoDB implements MetadataDatabase {
-    private MongoDatabase database;
+    private MongoDatabaseInserter database;
 
     public void createMetadataDatabase() {
-        MongoDBConnection connection = null;
+        MongoDBConnection connection;
         try {
             connection = new MongoDBConnection("localhost", 27017, "MetadataDatabase", "metadata");
             MetadataJsonConverter converter = new MetadataJsonConverter();
-            database = new MongoDatabase(connection, converter);
+            database = new MongoDatabaseInserter(connection, converter);
         } catch (Exception e) {
             System.out.println("Failed to insert metadata to MongoDB: " + e.getMessage());
         }

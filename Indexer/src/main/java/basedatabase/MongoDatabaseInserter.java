@@ -3,11 +3,11 @@ package basedatabase;
 import metadata.Metadata;
 import org.bson.Document;
 
-public class MongoDatabase {
-    private MongoDBConnection connection;
-    private MetadataJsonConverter converter;
+public class MongoDatabaseInserter {
+    private final MongoDBConnection connection;
+    private final MetadataJsonConverter converter;
 
-    public MongoDatabase(MongoDBConnection connection, MetadataJsonConverter converter) {
+    public MongoDatabaseInserter(MongoDBConnection connection, MetadataJsonConverter converter) {
         this.connection = connection;
         this.converter = converter;
     }
@@ -16,14 +16,6 @@ public class MongoDatabase {
         String json = converter.metadataToJson(metadata);
         Document document = Document.parse(json);
         connection.getCollection().insertOne(document);
-    }
-
-    public void close() {
-        connection.close();
-    }
-
-    public void drop() {
-        connection.getCollection().drop();
     }
 
     public MongoDBConnection getConnection() {

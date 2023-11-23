@@ -7,7 +7,7 @@ import com.hazelcast.map.IMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HazelcastDatamart implements Datamart {
+public class HazelcastDatamart implements DatamartHandler {
     public IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> createDatamart() {
         HazelcastInstance hzInstance = Hazelcast.newHazelcastInstance();
         return hzInstance.getMap("firstMap");

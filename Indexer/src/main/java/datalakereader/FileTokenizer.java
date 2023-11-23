@@ -9,12 +9,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class FileReader{
+public class FileTokenizer {
 
-    public String getBookId(Path file) {
-        String fileNameWithExtension = file.getFileName().toString();
-        String regex = "book(\\d+)\\.txt";
-        return fileNameWithExtension.replaceAll(regex, "$1");
+    public Map<String, Integer> wordTokenizer(Path file) throws IOException {
+        String language = getBookLanguage(file);
+        FilterMeaningfullWords meaningfullWords = new FilterMeaningfullWords();
+        meaningfullWords.storeLanguage(language);
+        Scanner scanner = skipMetadata(file);
+        Map<String, Integer> words = new HashMap<>();
+        scanner.useDelimiter("[^a-zA-Z]+");
+        while (scanner.hasNext()) {
+            String word = scanner.next();
+            word = word.toLowerCase();
+            addToDictionary(word, words, meaningfullWords);
+        }
+        scanner.close();
+        return words;
     }
 
     private String getBookLanguage(Path file) {
@@ -33,22 +43,6 @@ public class FileReader{
             e.printStackTrace();
         }
         return null;
-    }
-
-    public Map<String, Integer> wordTokenizer(Path file) throws IOException {
-        String language = getBookLanguage(file);
-        FilterMeaningfullWords meaningfullWords = new FilterMeaningfullWords();
-        meaningfullWords.storeLanguage(language);
-        Scanner scanner = skipMetadata(file);
-        Map<String, Integer> words = new HashMap<>();
-        scanner.useDelimiter("[^a-zA-Z]+");
-        while (scanner.hasNext()) {
-            String word = scanner.next();
-            word = word.toLowerCase();
-            addToDictionary(word, words, meaningfullWords);
-        }
-        scanner.close();
-        return words;
     }
 
     private static Scanner skipMetadata(Path file) throws IOException {
