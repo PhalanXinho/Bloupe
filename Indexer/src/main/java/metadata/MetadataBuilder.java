@@ -1,5 +1,7 @@
 package metadata;
 
+import domain.Book;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,7 +15,7 @@ public class MetadataBuilder {
     private String language = "";
     private String originalPublication = "";
 
-    public Metadata buildMetadata(Path file, String id) throws IOException {
+    public Book buildMetadata(Path file, String id) {
         try {
             File f = new File(String.valueOf(file));
             Scanner scanner = new Scanner(f);
@@ -38,7 +40,7 @@ public class MetadataBuilder {
                     originalPublication = line.replace("Original publication: ", "");
                 }
             }
-            return new Metadata(id, title, author, releaseDate, language, originalPublication);
+            return new Book(Integer.parseInt(id), title, author, Integer.parseInt(releaseDate), language, originalPublication);
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

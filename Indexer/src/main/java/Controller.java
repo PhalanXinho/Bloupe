@@ -1,28 +1,33 @@
-import basedatabase.MetadataDatabase;
-import basedatabase.MetadataMongoDB;
 import com.hazelcast.map.IMap;
 import datamarthandler.*;
+import domain.Book;
 import indexer.Indexer;
 import metadata.Metadata;
 import metadata.MetadataBuilder;
+import repository.book.BookRepository;
+import repository.book.PostgreSQLBookRepository;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-public class Controller implements DatamartHandler, MetadataDatabase {
+public class Controller implements DatamartHandler {
     private final HazelcastDatamart hzdataMart = new HazelcastDatamart();
-    private final MetadataMongoDB mongoDB = new MetadataMongoDB();
+    private final BookRepository bookRepository = new PostgreSQLBookRepository();
     private final MetadataBuilder metadataBuilder = new MetadataBuilder();
     private final Indexer indexer = new Indexer();
 
     public void execute(String bookPath) throws IOException {
+
         IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map = createDatamart();
         String id = runIndexer(bookPath, map);
-        Metadata bookMetadata = metadataBuilder.buildMetadata(Path.of(bookPath), id);
-        createMetadataDatabase();
-        insertMetadata(bookMetadata);
+
+
+        Book book = metadataBuilder.buildMetadata(Path.of(bookPath), id);
+        bookRepository.save( book );
+
+
         System.out.println(map.entrySet());
         System.out.println("The Indexing has been done.");
     }
@@ -52,14 +57,6 @@ public class Controller implements DatamartHandler, MetadataDatabase {
     public void addWordToDatamart(Word word, IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map) {
         hzdataMart.addWordToDatamart(word, map);
     }
-
-    @Override
-    public void createMetadataDatabase() {
-        mongoDB.createMetadataDatabase();
-    }
-
-    @Override
-    public void insertMetadata(Metadata bookMetadata) {
-        mongoDB.insertMetadata(bookMetadata);
-    }
 }
+
+
