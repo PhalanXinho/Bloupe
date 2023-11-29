@@ -1,12 +1,21 @@
 import broker.ArtemisMQBooksConsumer;
+import broker.BooksConsumer;
+import datalake.DataLakeManager;
+import datalake.GoogleCloudDataLakeManager;
 
 public class Main {
     private static String bookPath;
 
     public static void main(String[] args) {
 
-        ArtemisMQBooksConsumer artemisMQFilesConsumer = new ArtemisMQBooksConsumer();
-        System.out.println( artemisMQFilesConsumer.consume() );
+        BooksConsumer artemisMQFilesConsumer = new ArtemisMQBooksConsumer();
+        DataLakeManager dataLakeManager = new GoogleCloudDataLakeManager();
+
+        while (true) {
+            String fileName = artemisMQFilesConsumer.consume();
+            String content = dataLakeManager.read( fileName );
+            System.out.println( content );
+        }
 
         /*
         try {
