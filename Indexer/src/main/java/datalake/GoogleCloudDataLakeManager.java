@@ -17,7 +17,7 @@ public class GoogleCloudDataLakeManager implements DataLakeManager {
         Properties properties = new Properties();
         GoogleCredentials credentials;
         try {
-            properties.load( getClass().getClassLoader().getResourceAsStream("storage.properties") );
+            properties.load(getClass().getClassLoader().getResourceAsStream("storage.properties"));
             credentials = GoogleCredentials.getApplicationDefault();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -29,5 +29,12 @@ public class GoogleCloudDataLakeManager implements DataLakeManager {
     @Override
     public String read(String fileName) {
         return new String(bucket.get(fileName).getContent(), StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public int getIdFromFileName(String fileName) {
+        int startIdx = fileName.lastIndexOf('/') + 1;
+        int endIdx = fileName.indexOf(".txt");
+        return Integer.parseInt(fileName.substring(startIdx, endIdx));
     }
 }

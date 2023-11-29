@@ -1,4 +1,4 @@
-package repository;
+package bookrepository;
 
 import java.util.Optional;
 

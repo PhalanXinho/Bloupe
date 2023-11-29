@@ -7,17 +7,20 @@ import com.hazelcast.map.IMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HazelcastDatamart implements DatamartHandler {
-    public IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> createDatamart() {
-        HazelcastInstance hzInstance = Hazelcast.newHazelcastInstance();
-        return hzInstance.getMap("firstMap");
+public class HazelcastDataMartManager implements DataMartManager {
 
+    private final IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> dataMart;
+
+    public HazelcastDataMartManager() {
+        HazelcastInstance hzInstance = Hazelcast.newHazelcastInstance();
+        this.dataMart = hzInstance.getMap("firstMap");
     }
-    public void addWordToDatamart(Word word, IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map) {
+
+    public void addWordToDataMart(Word word) {
         Character firstCharacter = word.word().charAt(0);
         Character secondCharacter = word.word().charAt(1);
 
-        Map<Character, Map<String, Map<String, Integer>>> firstCharacterMap = map.get(firstCharacter);
+        Map<Character, Map<String, Map<String, Integer>>> firstCharacterMap = dataMart.get(firstCharacter);
 
         if (firstCharacterMap == null) {
             firstCharacterMap = new HashMap<>();
@@ -34,6 +37,6 @@ public class HazelcastDatamart implements DatamartHandler {
         secondCharacterMap.put(word.word(), wordInfo);
         firstCharacterMap.put(secondCharacter, secondCharacterMap);
 
-        map.put(firstCharacter, firstCharacterMap);
+        dataMart.put(firstCharacter, firstCharacterMap);
     }
 }

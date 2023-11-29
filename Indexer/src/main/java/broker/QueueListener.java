@@ -10,7 +10,7 @@ public class QueueListener implements MessageListener {
     @Override
     public void onMessage(Message message) {
 
-        TextMessage textMessage = (TextMessage)message;
+        TextMessage textMessage = (TextMessage) message;
         try {
             System.out.println("Received message, starting indexing file: " + textMessage.getText());
         } catch (JMSException e) {

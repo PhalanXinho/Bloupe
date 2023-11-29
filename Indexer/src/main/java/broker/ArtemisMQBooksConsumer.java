@@ -12,8 +12,8 @@ public class ArtemisMQBooksConsumer implements BooksConsumer {
     public ArtemisMQBooksConsumer() {
         try {
             InitialContext ic = new InitialContext();
-            ConnectionFactory cf = (ConnectionFactory)ic.lookup("ConnectionFactory");
-            Queue orderQueue = (Queue)ic.lookup("queues/FileQueue");
+            ConnectionFactory cf = (ConnectionFactory) ic.lookup("ConnectionFactory");
+            Queue orderQueue = (Queue) ic.lookup("queues/FileQueue");
             Connection connection = cf.createConnection();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             consumer = session.createConsumer(orderQueue);
@@ -28,7 +28,7 @@ public class ArtemisMQBooksConsumer implements BooksConsumer {
     @Override
     public String consume() {
         try {
-            TextMessage textMessage = (TextMessage)consumer.receive();
+            TextMessage textMessage = (TextMessage) consumer.receive();
             return textMessage.getText();
         } catch (JMSException e) {
             throw new RuntimeException(e);

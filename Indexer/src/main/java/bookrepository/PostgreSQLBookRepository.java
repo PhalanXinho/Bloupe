@@ -1,4 +1,4 @@
-package repository.book;
+package bookrepository;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -17,7 +17,6 @@ public class PostgreSQLBookRepository implements BookRepository {
     private final HikariDataSource connectionPool;
 
     public PostgreSQLBookRepository() {
-
         Properties properties = new Properties();
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream("hikari.properties"));
@@ -27,22 +26,34 @@ public class PostgreSQLBookRepository implements BookRepository {
         HikariConfig config = new HikariConfig(properties);
         connectionPool = new HikariDataSource(config);
 
+        //dropBookTable();
+
         createBookTable();
     }
 
+    private void dropBookTable() {
+        String QUERY = "DROP TABLE books";
+        try (
+                Connection conn = connectionPool.getConnection();
+                PreparedStatement ps = conn.prepareStatement(QUERY)
+        ) {
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void createBookTable() {
         String QUERY = "CREATE TABLE IF NOT EXISTS books (" +
                 "id SERIAL PRIMARY KEY," +
                 "title VARCHAR," +
                 "author VARCHAR," +
-                "year INTEGER," +
-                "language VARCHAR," +
-                "originalPublication VARCHAR)";
+                "release_date DATE," +
+                "language VARCHAR)";
         try (
                 Connection conn = connectionPool.getConnection();
                 PreparedStatement ps = conn.prepareStatement(QUERY)
-        ){
+        ) {
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,7 +67,7 @@ public class PostgreSQLBookRepository implements BookRepository {
         try (
                 Connection conn = connectionPool.getConnection();
                 PreparedStatement ps = conn.prepareStatement(QUERY)
-        ){
+        ) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -64,9 +75,8 @@ public class PostgreSQLBookRepository implements BookRepository {
                         rs.getInt("id"),
                         rs.getString("title"),
                         rs.getString("author"),
-                        rs.getInt("year"),
-                        rs.getString("language"),
-                        rs.getString("originalPublication"));
+                        rs.getDate("release_date"),
+                        rs.getString("language"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -76,17 +86,16 @@ public class PostgreSQLBookRepository implements BookRepository {
 
     @Override
     public void save(Book book) {
-        String QUERY = "INSERT INTO books (id, title, author, year, language, originalPublication) VALUES (?, ?,?,?,?,?)";
+        String QUERY = "INSERT INTO books (id, title, author, release_date, language) VALUES (?,?,?,?,?)";
         try (
                 Connection conn = connectionPool.getConnection();
                 PreparedStatement ps = conn.prepareStatement(QUERY)
-        ){
+        ) {
             ps.setInt(1, book.id());
             ps.setString(2, book.title());
             ps.setString(3, book.author());
-            ps.setInt(4, book.year());
+            ps.setDate(4, book.releaseDate());
             ps.setString(5, book.language());
-            ps.setString(6, book.originalPublication());
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();

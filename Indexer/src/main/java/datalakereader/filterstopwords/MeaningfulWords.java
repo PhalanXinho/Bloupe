@@ -3,17 +3,17 @@ package datalakereader.filterstopwords;
 import java.util.HashSet;
 import java.util.Set;
 
-public interface MeaningfullWords {
+public interface MeaningfulWords {
 
     Set<String> stopwords_in = new HashSet<>(Set.of(
-            "the", "some", "any", "aux","all", "many", "few", "several",
+            "the", "some", "any", "aux", "all", "many", "few", "several",
             "both", "neither", "either", "each", "every", "this", "that",
             "your", "his", "her", "its", "our", "their",
             "those", "these", "whose", "half", "much", "little",
             "enough", "plenty", "most", "more", "another", "other", "others", "one", "two",
             "three", "four", "five", "six", "seven", "eight", "nine",
             "ten", "what", "rather", "such", "quite", "when", "where",
-            "which", "who", "she", "you", "they", "him","about", "above", "across",
+            "which", "who", "she", "you", "they", "him", "about", "above", "across",
             "after", "against", "along", "amid", "among",
             "around", "before", "behind", "below", "beneath", "beside", "between",
             "beyond", "but", "concerning", "considering", "despite", "down",
@@ -26,7 +26,7 @@ public interface MeaningfullWords {
             "a", "ante", "bajo", "con", "contra", "de", "desde", "durante", "en", "entre",
             "hacia", "hasta", "mediante", "para", "por", "según", "sin", "sobre", "tras", "versus", "vía",
             "el", "la", "lo", "los", "las", "un", "una", "unos", "unas", "este", "esta", "estos", "estas",
-            "ese", "esa", "esos", "esas", "aquel", "aquella", "aquellos", "aquellas","mi", "tu", "su",
+            "ese", "esa", "esos", "esas", "aquel", "aquella", "aquellos", "aquellas", "mi", "tu", "su",
             "nuestro", "vuestro"
     ));
 
@@ -34,7 +34,7 @@ public interface MeaningfullWords {
             "a", "con", "da", "di", "in", "su", "per", "tra", "fra",
             "oltre", "verso", "sotto", "sopra", "vicino", "lontano", "presso", "fuori",
             "dentro", "fuori da", "davanti a", "dietro", "dopo", "prima di", "durante",
-            "contro", "secondo", "in base a", "a causa di","il", "lo", "la", "i", "gli", "le",
+            "contro", "secondo", "in base a", "a causa di", "il", "lo", "la", "i", "gli", "le",
             "un", "uno", "una", "dei", "degli", "delle", "questo", "questa", "questi", "queste",
             "quello", "quella", "quelli", "quelle"
     ));

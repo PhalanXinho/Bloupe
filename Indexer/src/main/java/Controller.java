@@ -1,61 +1,60 @@
-import com.hazelcast.map.IMap;
-import datamarthandler.*;
+import bookmanager.FileContentManager;
+import bookrepository.BookRepository;
+import bookrepository.PostgreSQLBookRepository;
+import broker.ArtemisMQBooksConsumer;
+import broker.BooksConsumer;
+import datalake.DataLakeManager;
+import datalake.GoogleCloudDataLakeManager;
+import datamarthandler.DataMartManager;
+import datamarthandler.HazelcastDataMartManager;
+import datamarthandler.Word;
 import domain.Book;
 import indexer.Indexer;
-import metadata.Metadata;
-import metadata.MetadataBuilder;
-import repository.book.BookRepository;
-import repository.book.PostgreSQLBookRepository;
+import metadata.MetadataManager;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 
-public class Controller implements DatamartHandler {
-    private final HazelcastDatamart hzdataMart = new HazelcastDatamart();
+public class Controller {
+    private final DataMartManager dataMartManager = new HazelcastDataMartManager();
     private final BookRepository bookRepository = new PostgreSQLBookRepository();
-    private final MetadataBuilder metadataBuilder = new MetadataBuilder();
+    private final DataLakeManager dataLakeManager = new GoogleCloudDataLakeManager();
+    private final BooksConsumer booksConsumer = new ArtemisMQBooksConsumer();
     private final Indexer indexer = new Indexer();
 
-    public void execute(String bookPath) throws IOException {
+    public void start() {
 
-        IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map = createDatamart();
-        String id = runIndexer(bookPath, map);
+        /*
+        1. consume message from queue
+        2. download the file from datalake
+        3. get file content
+        4. get file metadata
+        5. create Book object from metadata
+        6. save Book object to database
+        7. index file content
+        9. add words to datamart
+        8. wait for another message from queue
+        */
 
+        while (true) {
+            String filePath = booksConsumer.consume();
 
-        Book book = metadataBuilder.buildMetadata(Path.of(bookPath), id);
-        bookRepository.save( book );
+            String fileContent = dataLakeManager.read(filePath);
+            int bookId = dataLakeManager.getIdFromFileName(filePath);
 
+            FileContentManager fileContentManager = new FileContentManager(fileContent);
 
-        System.out.println(map.entrySet());
-        System.out.println("The Indexing has been done.");
-    }
+            String metadata = fileContentManager.getMetadataPart();
+            String content = fileContentManager.getContentPart();
 
-    private String runIndexer(String bookPath, IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map) {
-        try {
-            List<Word> wordList = indexer.invertedIndex(Path.of(bookPath));
-            String bookId = wordList.get(0).id();
+            MetadataManager metadataManager = new MetadataManager(metadata);
+            Book book = metadataManager.bookFromMetadata(bookId);
+            bookRepository.save(book);
+
+            List<Word> wordList = indexer.invertedIndex(content, book);
             for (Word word : wordList) {
-                addWordToDatamart(word, map);
+                dataMartManager.addWordToDataMart(word);
             }
-            return bookId;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-    }
-
-
-
-    @Override
-    public IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> createDatamart() {
-        return hzdataMart.createDatamart();
-
-    }
-
-    @Override
-    public void addWordToDatamart(Word word, IMap<Character, Map<Character, Map<String, Map<String, Integer>>>> map) {
-        hzdataMart.addWordToDatamart(word, map);
     }
 }
 

@@ -1,21 +1,21 @@
 package domain;
 
+import java.sql.Date;
+
 public class Book {
 
     private int id;
     private String title;
     private String author;
-    private int year;
+    private Date releaseDate;
     private String language;
-    private String originalPublication;
 
-    public Book(int id, String title, String author, int year, String language, String originalPublication) {
+    public Book(int id, String title, String author, Date releaseDate, String language) {
         this.id = id;
         this.title = title;
         this.author = author;
-        this.year = year;
+        this.releaseDate = releaseDate;
         this.language = language;
-        this.originalPublication = originalPublication;
     }
 
     public int id() {
@@ -42,12 +42,12 @@ public class Book {
         this.author = author;
     }
 
-    public int year() {
-        return year;
+    public Date releaseDate() {
+        return releaseDate;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public String language() {
@@ -58,11 +58,14 @@ public class Book {
         this.language = language;
     }
 
-    public String originalPublication() {
-        return originalPublication;
-    }
-
-    public void setOriginalPublication(String originalPublication) {
-        this.originalPublication = originalPublication;
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", releaseDate=" + releaseDate +
+                ", language='" + language + '\'' +
+                '}';
     }
 }
