@@ -34,4 +34,12 @@ public class ArtemisMQBooksConsumer implements BooksConsumer {
             throw new RuntimeException(e);
         }
     }
+
+    public void registerListener(MessageListener messageListener) {
+        try {
+            consumer.setMessageListener(messageListener);
+        } catch (JMSException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
