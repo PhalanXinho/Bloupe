@@ -21,6 +21,18 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.7</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
             <version>5.2.2</version>
@@ -43,7 +55,6 @@
             <artifactId>postgresql</artifactId>
             <version>42.6.0</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.activemq</groupId>
@@ -97,7 +108,6 @@
             <artifactId>google-auth-library-credentials</artifactId>
             <version>1.20.0</version>
         </dependency>
-
 
     </dependencies>
 
