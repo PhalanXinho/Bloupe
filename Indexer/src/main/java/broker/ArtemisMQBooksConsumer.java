@@ -8,19 +8,21 @@ import javax.naming.NamingException;
 public class ArtemisMQBooksConsumer implements BooksConsumer {
 
     private final MessageConsumer consumer;
+    private final QueueBrowser browser;
 
     public ArtemisMQBooksConsumer() {
         try {
             InitialContext ic = new InitialContext();
             ConnectionFactory cf = (ConnectionFactory) ic.lookup("ConnectionFactory");
-            Queue orderQueue = (Queue) ic.lookup("queues/FileQueue");
+            Queue fileQueue = (Queue) ic.lookup("queues/FileQueue");
             Connection connection = cf.createConnection();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            consumer = session.createConsumer(orderQueue);
             connection.start();
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        } catch (JMSException e) {
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            browser = session.createBrowser(fileQueue);
+            consumer = session.createConsumer(fileQueue);
+
+        } catch (NamingException | JMSException e) {
             throw new RuntimeException(e);
         }
     }
@@ -28,16 +30,12 @@ public class ArtemisMQBooksConsumer implements BooksConsumer {
     @Override
     public String consume() {
         try {
-            TextMessage textMessage = (TextMessage) consumer.receive();
-            return textMessage.getText();
-        } catch (JMSException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void registerListener(MessageListener messageListener) {
-        try {
-            consumer.setMessageListener(messageListener);
+            if (browser.getEnumeration().hasMoreElements()) {
+                Message message = (Message) browser.getEnumeration().nextElement();
+                return ((TextMessage) message).getText();
+            }
+            Message message = consumer.receive();
+            return ((TextMessage) message).getText();
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }

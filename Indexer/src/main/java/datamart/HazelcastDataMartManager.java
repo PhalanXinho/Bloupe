@@ -45,17 +45,4 @@ public class HazelcastDataMartManager implements DataMartManager {
 
         dataMart.put(firstCharacter, firstCharacterMap);
     }
-
-
-    @Override
-    public void findWord(String word) {
-        try {
-            List<DataMartEntry> results = dataMart.get(word.charAt(0)).get(word.charAt(1)).get(word);
-            for (DataMartEntry dataMartEntry : results) {
-                System.out.println(dataMartEntry.bookId() + "->" + dataMartEntry.appearance() + "x\n");
-            }
-        } catch (NullPointerException exception) {
-            System.out.println("Word not found");
-        }
-    }
 }

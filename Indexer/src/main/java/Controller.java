@@ -6,15 +6,20 @@ import broker.BooksConsumer;
 import datalake.DataLakeManager;
 import datalake.GoogleCloudDataLakeManager;
 import datamart.DataMartManager;
+import datamart.GoogleCloudDataMartManager;
 import datamart.HazelcastDataMartManager;
 import datamart.IndexedWordResult;
 import domain.Book;
 import indexer.Indexer;
 import metadata.MetadataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class Controller {
+
+    private final Logger logger = LoggerFactory.getLogger(Controller.class);
     private final DataMartManager dataMartManager = new HazelcastDataMartManager();
     private final BookRepository bookRepository = new PostgreSQLBookRepository();
     private final DataLakeManager dataLakeManager = new GoogleCloudDataLakeManager();
@@ -34,14 +39,16 @@ public class Controller {
         9. add words to datamart
         8. wait for another message from queue
         */
-
         while (true) {
 
             String filePath = booksConsumer.consume();
-            System.out.println("Rquest to index book: " + filePath);
+            logger.info("Request to index book: " + filePath);
 
+
+            logger.info("Downloading " + filePath + " from the data lake...");
             String fileContent = dataLakeManager.read(filePath);
             int bookId = dataLakeManager.getIdFromFileName(filePath);
+            logger.info("Downloading finished successfully");
 
             FileContentManager fileContentManager = new FileContentManager(fileContent);
 
@@ -50,20 +57,23 @@ public class Controller {
 
             MetadataManager metadataManager = new MetadataManager(metadata);
             Book book = metadataManager.bookFromMetadata(bookId);
+
+            logger.info("Saving book with id=" + book.id() + " to the book database...");
             bookRepository.save(book);
+            logger.info("Saving finished successfully");
 
+
+            logger.info("Starting the indexing process...");
             List<IndexedWordResult> indexedWordResultList = indexer.invertedIndex(content, book);
-            for (IndexedWordResult indexedWordResult : indexedWordResultList) {
-                dataMartManager.addWordToDataMart(indexedWordResult);
-            }
+            logger.info("Indexing process finished successfully");
 
-            /*
-            //CODE FOR TESTING THE DATAMART
-            //(uncomment this and comment body of the while cycle above)
-            Scanner scanner = new Scanner(System.in);
-            String query = scanner.nextLine();
-            dataMartManager.findWord(query);
-             */
+            logger.info("Adding " + indexedWordResultList.size() + " results into the data mart");
+            for ( int i = 0; i < indexedWordResultList.size(); i++) {
+                if ( i % 200 == 0 )
+                    logger.info(i + " out of " + indexedWordResultList.size() + " words added into data mart");
+                dataMartManager.addWordToDataMart(indexedWordResultList.get(i));
+            }
+            logger.info("Adding into data mart finished");
         }
     }
 }
