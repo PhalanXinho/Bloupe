@@ -13,7 +13,6 @@ import indexer.Indexer;
 import metadata.MetadataManager;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class Controller {
     private final DataMartManager dataMartManager = new HazelcastDataMartManager();
@@ -37,7 +36,7 @@ public class Controller {
         */
 
         while (true) {
-/*
+
             String filePath = booksConsumer.consume();
             System.out.println("Rquest to index book: " + filePath);
 
@@ -57,16 +56,14 @@ public class Controller {
             for (IndexedWordResult indexedWordResult : indexedWordResultList) {
                 dataMartManager.addWordToDataMart(indexedWordResult);
             }
-*/
 
-
-
+            /*
             //CODE FOR TESTING THE DATAMART
             //(uncomment this and comment body of the while cycle above)
-
             Scanner scanner = new Scanner(System.in);
             String query = scanner.nextLine();
             dataMartManager.findWord(query);
+             */
         }
     }
 }
