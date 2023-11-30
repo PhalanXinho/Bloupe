@@ -1,7 +1,7 @@
 package indexer;
 
 import datalakereader.FileTokenizer;
-import datamarthandler.Word;
+import datamart.IndexedWordResult;
 import domain.Book;
 
 import java.util.ArrayList;
@@ -11,12 +11,12 @@ import java.util.Map;
 public class Indexer {
     private final FileTokenizer fileTokenizer = new FileTokenizer();
 
-    public List<Word> invertedIndex(String bookContent, Book book) {
-        List<Word> wordList = new ArrayList<>();
+    public List<IndexedWordResult> invertedIndex(String bookContent, Book book) {
+        List<IndexedWordResult> indexedWordResultList = new ArrayList<>();
         Map<String, Integer> map = fileTokenizer.wordTokenizer(bookContent, book);
         for (Map.Entry<String, Integer> entry : map.entrySet())
-            wordList.add(new Word(entry.getKey(), Integer.toString(book.id()), entry.getValue()));
-        return wordList;
+            indexedWordResultList.add(new IndexedWordResult(entry.getKey(), book.id(), entry.getValue()));
+        return indexedWordResultList;
     }
 }
 

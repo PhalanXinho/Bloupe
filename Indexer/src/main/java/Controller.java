@@ -5,14 +5,15 @@ import broker.ArtemisMQBooksConsumer;
 import broker.BooksConsumer;
 import datalake.DataLakeManager;
 import datalake.GoogleCloudDataLakeManager;
-import datamarthandler.DataMartManager;
-import datamarthandler.HazelcastDataMartManager;
-import datamarthandler.Word;
+import datamart.DataMartManager;
+import datamart.HazelcastDataMartManager;
+import datamart.IndexedWordResult;
 import domain.Book;
 import indexer.Indexer;
 import metadata.MetadataManager;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class Controller {
     private final DataMartManager dataMartManager = new HazelcastDataMartManager();
@@ -36,7 +37,9 @@ public class Controller {
         */
 
         while (true) {
+/*
             String filePath = booksConsumer.consume();
+            System.out.println("Rquest to index book: " + filePath);
 
             String fileContent = dataLakeManager.read(filePath);
             int bookId = dataLakeManager.getIdFromFileName(filePath);
@@ -50,10 +53,20 @@ public class Controller {
             Book book = metadataManager.bookFromMetadata(bookId);
             bookRepository.save(book);
 
-            List<Word> wordList = indexer.invertedIndex(content, book);
-            for (Word word : wordList) {
-                dataMartManager.addWordToDataMart(word);
+            List<IndexedWordResult> indexedWordResultList = indexer.invertedIndex(content, book);
+            for (IndexedWordResult indexedWordResult : indexedWordResultList) {
+                dataMartManager.addWordToDataMart(indexedWordResult);
             }
+*/
+
+
+
+            //CODE FOR TESTING THE DATAMART
+            //(uncomment this and comment body of the while cycle above)
+
+            Scanner scanner = new Scanner(System.in);
+            String query = scanner.nextLine();
+            dataMartManager.findWord(query);
         }
     }
 }
