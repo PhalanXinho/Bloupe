@@ -69,11 +69,11 @@ public class Controller {
 
             logger.info("Adding " + indexedWordResultList.size() + " results into the data mart");
             for ( int i = 0; i < indexedWordResultList.size(); i++) {
-                if ( i % 200 == 0 )
+                if ( i % 250 == 0 )
                     logger.info(i + " out of " + indexedWordResultList.size() + " words added into data mart");
                 dataMartManager.addWordToDataMart(indexedWordResultList.get(i));
             }
-            logger.info("Adding into data mart finished");
+            logger.info("Added " + indexedWordResultList.size() + " results into the data mart");
         }
     }
 }
