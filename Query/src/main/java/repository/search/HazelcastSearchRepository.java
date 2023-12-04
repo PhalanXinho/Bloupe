@@ -22,9 +22,9 @@ public class HazelcastSearchRepository implements SearchRepository {
     public List<SharedDataMartEntry> getSearchResult(String word) {
         char firstChar = word.charAt(0);
         char secondChar = word.charAt(1);
-        if ( dataMart.get(firstChar) == null
+        if (dataMart.get(firstChar) == null
                 || dataMart.get(firstChar).get(secondChar) == null
-                || dataMart.get(firstChar).get(secondChar).get(word) == null )
+                || dataMart.get(firstChar).get(secondChar).get(word) == null)
             return new ArrayList<>();
         return ((dataMart.get(firstChar)).get(secondChar)).get(word);
     }

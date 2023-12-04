@@ -35,7 +35,7 @@ public class PostgreSQLBookRepository implements BookRepository {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getDate("release_date"), rs.getString("language") );
+                book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getDate("release_date"), rs.getString("language"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
