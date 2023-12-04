@@ -20,7 +20,7 @@ public class GoogleCloudSearchRepository implements SearchRepository {
         Properties properties = new Properties();
         GoogleCredentials credentials;
         try {
-            properties.load( getClass().getClassLoader().getResourceAsStream("storage.properties") );
+            properties.load(getClass().getClassLoader().getResourceAsStream("storage.properties"));
             credentials = GoogleCredentials.getApplicationDefault();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -53,7 +53,7 @@ public class GoogleCloudSearchRepository implements SearchRepository {
             String[] parts = line.split(";");
             int bookId = Integer.parseInt(parts[0]);
             int appearance = Integer.parseInt(parts[1]);
-            entries.add(new SharedDataMartEntry( bookId, appearance));
+            entries.add(new SharedDataMartEntry(bookId, appearance));
         }
         return entries;
     }
