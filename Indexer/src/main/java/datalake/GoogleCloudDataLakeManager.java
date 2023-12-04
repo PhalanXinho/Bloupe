@@ -1,6 +1,8 @@
 package datalake;
 
+import com.google.api.gax.paging.Page;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
@@ -24,6 +26,9 @@ public class GoogleCloudDataLakeManager implements DataLakeManager {
         }
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         this.bucket = storage.get(properties.getProperty("DATA_LAKE_BUCKET_NAME"));
+
+
+        clear();
     }
 
     @Override
@@ -36,5 +41,12 @@ public class GoogleCloudDataLakeManager implements DataLakeManager {
         int startIdx = fileName.lastIndexOf('/') + 1;
         int endIdx = fileName.indexOf(".txt");
         return Integer.parseInt(fileName.substring(startIdx, endIdx));
+    }
+
+    @Override
+    public void clear() {
+        Page<Blob> blobs = bucket.list();
+        for ( Blob blob : blobs.iterateAll())
+            blob.delete();
     }
 }

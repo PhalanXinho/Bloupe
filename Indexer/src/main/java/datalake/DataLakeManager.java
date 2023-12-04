@@ -6,4 +6,6 @@ public interface DataLakeManager {
 
     int getIdFromFileName(String fileName);
 
+    void clear();
+
 }
