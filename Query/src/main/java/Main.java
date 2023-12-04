@@ -1,5 +1,7 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import filter.SearchResultFilter;
+import filter.StreamSearchResultFilter;
 import repository.search.HazelcastSearchRepository;
 import repository.search.SearchRepository;
 import search.SearchResult;
@@ -33,12 +35,22 @@ public class Main {
             response.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         });
 
-        get("/search/:word", (request, response) -> {
+        get("/document/:word", "application/json", (request, response) -> {
+
+            String from = request.queryParams("from");
+            String to = request.queryParams("to");
+            String author = request.queryParams("author");
 
             logger.info("Received request " + request.url() + " from " + request.ip());
+            logger.info("Author: " + author );
+            logger.info("From: " + from);
+            logger.info("To: " + to);
 
             response.type("application/json");
             List<SearchResult> searchResult = searchService.search(request.params(":word"));
+
+            SearchResultFilter filter = new StreamSearchResultFilter(author, from, to);
+            searchResult = filter.filter(searchResult);
 
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd").create();

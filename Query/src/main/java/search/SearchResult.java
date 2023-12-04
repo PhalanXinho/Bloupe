@@ -22,5 +22,8 @@ public class SearchResult implements Comparable<SearchResult> {
         }
     }
 
+    public Book book() {
+        return book;
+    }
 
 }
