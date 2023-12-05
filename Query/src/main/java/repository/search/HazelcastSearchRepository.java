@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class HazelcastSearchRepository implements SearchRepository {
 
-    private IMap<Character, Map<Character, Map<String, List<SharedDataMartEntry>>>> dataMart;
+    private final IMap<Character, Map<Character, Map<String, List<SharedDataMartEntry>>>> dataMart;
     private final Logger logger = LoggerFactory.getLogger(HazelcastSearchRepository.class);
 
 
@@ -45,6 +45,7 @@ public class HazelcastSearchRepository implements SearchRepository {
             try {
                 this.dataMart.putAll(mapper.readValue(new File(path), new TypeReference<>() {
                 }));
+                logger.info("Successfully loaded datamart from " + path + " file");
             } catch (IOException e) {
                 logger.info("Datamart file not found, using empty datamart");
             }

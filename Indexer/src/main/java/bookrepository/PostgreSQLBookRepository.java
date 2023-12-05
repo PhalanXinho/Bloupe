@@ -26,8 +26,6 @@ public class PostgreSQLBookRepository implements BookRepository {
         HikariConfig config = new HikariConfig(properties);
         connectionPool = new HikariDataSource(config);
 
-        dropBookTable();
-
         createBookTable();
     }
 
