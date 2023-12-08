@@ -11,8 +11,10 @@ import repository.search.SearchRepository;
 import search.SearchResult;
 import search.SearchService;
 import search.SearchServiceImpl;
+import search.parser.WordParser;
 import spark.Spark;
 
+import java.sql.Timestamp;
 import java.util.List;
 public class Controller {
 
@@ -22,7 +24,7 @@ public class Controller {
     private final SearchRepository searchRepository = new HazelcastSearchRepository("datamart.json");
     private final SearchService searchService = new SearchServiceImpl(searchRepository, bookRepository);
 
-    public void execute(){
+    public void execute() {
         Spark.before((request, response) -> {
             response.header("Access-Control-Allow-Origin", "*");
             response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -36,12 +38,15 @@ public class Controller {
             String author = request.queryParams("author");
 
             logger.info("Received request " + request.url() + " from " + request.ip());
+            logger.info(new Timestamp(System.currentTimeMillis()) + ": " + request.params(":word"));
             logger.info("Author: " + author );
             logger.info("From: " + from);
             logger.info("To: " + to);
 
             response.type("application/json");
-            List<SearchResult> searchResult = searchService.search(request.params(":word"));
+            List<String> words = new WordParser().parse(request.params(":word"));
+
+            List<SearchResult> searchResult = searchService.search(words);
 
             SearchResultFilter filter = new StreamSearchResultFilter(author, from, to);
             searchResult = filter.filter(searchResult);
