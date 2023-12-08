@@ -8,7 +8,7 @@ public class IdGenerator implements IntGenerator {
 
     private Set<Integer> generatedIntegers = new HashSet<>();
 
-    private final int LIMIT = 10000;
+    private final int LIMIT = 70000;
 
     @Override
     public Integer generate() {
