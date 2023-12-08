@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import search.parser.WordParser;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class Main {
             String author = request.queryParams("author");
 
             logger.info("Received request " + request.url() + " from " + request.ip());
+            logger.info(new Timestamp(System.currentTimeMillis()) + ": " + request.params(":word"));
             logger.info("Author: " + author );
             logger.info("From: " + from);
             logger.info("To: " + to);
