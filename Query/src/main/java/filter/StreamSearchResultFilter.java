@@ -21,7 +21,6 @@ public class StreamSearchResultFilter implements SearchResultFilter {
         this.to = to;
     }
 
-
     @Override
     public List<SearchResult> filter(List<SearchResult> results) {
 
@@ -41,5 +40,4 @@ public class StreamSearchResultFilter implements SearchResultFilter {
         }).toList();
         return results;
     }
-
 }

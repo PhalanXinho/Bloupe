@@ -11,7 +11,9 @@ import repository.book.BookRepository;
 import repository.book.PostgreSQLBookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import search.parser.WordParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static spark.Spark.before;
@@ -47,13 +49,16 @@ public class Main {
             logger.info("To: " + to);
 
             response.type("application/json");
-            List<SearchResult> searchResult = searchService.search(request.params(":word"));
+            List<SearchResult> searchResult = new ArrayList<>();
+            List<String> words = new WordParser().parse(request.params(":word"));
+
+            for (String word : words)
+                searchResult.addAll(searchService.search(word));
 
             SearchResultFilter filter = new StreamSearchResultFilter(author, from, to);
             searchResult = filter.filter(searchResult);
 
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd").create();
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
             return gson.toJson(searchResult);
         });
     }

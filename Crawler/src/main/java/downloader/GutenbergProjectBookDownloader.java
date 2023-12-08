@@ -28,7 +28,6 @@ public class GutenbergProjectBookDownloader implements BookDownloader {
         try {
             return new URI("https://www.gutenberg.org/cache/epub/" + id + "/pg" + id + ".txt").toURL();
         } catch (URISyntaxException | MalformedURLException e) {
-            //Should never throw
             throw new RuntimeException(e);
         }
     }
