@@ -36,3 +36,11 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+.idea
+.idea/*
+
+*/key.json
+
+dependency-reduced-pom.xml
+
