@@ -100,7 +100,7 @@
                             <arguments>
                                 <argument>build</argument>
                                 <argument>-t</argument>
-                                <argument>nagyjak1/db:${project.artifactId}</argument>
+                                <argument>nagyjak1/bd:${project.artifactId}</argument>
                                 <argument>.</argument>
                             </arguments>
                         </configuration>
