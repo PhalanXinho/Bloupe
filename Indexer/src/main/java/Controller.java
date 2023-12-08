@@ -6,7 +6,6 @@ import broker.BooksConsumer;
 import datalake.DataLakeManager;
 import datalake.GoogleCloudDataLakeManager;
 import datamart.DataMartManager;
-import datamart.GoogleCloudDataMartManager;
 import datamart.HazelcastDataMartManager;
 import datamart.IndexedWordResult;
 import domain.Book;
@@ -28,17 +27,6 @@ public class Controller {
 
     public void start() {
 
-        /*
-        1. consume message from queue
-        2. download the file from datalake
-        3. get file content
-        4. get file metadata
-        5. create Book object from metadata
-        6. save Book object to database
-        7. index file content
-        9. add words to datamart
-        8. wait for another message from queue
-        */
         while (true) {
 
             String filePath = booksConsumer.consume();
@@ -68,13 +56,20 @@ public class Controller {
             logger.info("Indexing process finished successfully");
 
             logger.info("Adding " + indexedWordResultList.size() + " results into the data mart");
-            for ( int i = 0; i < indexedWordResultList.size(); i++) {
-                if ( i % 250 == 0 )
+            for (int i = 0; i < indexedWordResultList.size(); i++) {
+                if (i % 250 == 0)
                     logger.info(i + " out of " + indexedWordResultList.size() + " words added into data mart");
                 dataMartManager.addWordToDataMart(indexedWordResultList.get(i));
             }
             logger.info("Added " + indexedWordResultList.size() + " results into the data mart");
 
+
+            if ( dataMartManager.saveIntoFile("datamart.json") ) {
+                logger.info("Data mart saved into datamart.json file");
+            }
+            else {
+                logger.error("There was an error saving data mart into datamart.json file");
+            }
 
         }
     }

@@ -1,10 +1,16 @@
 package datamart;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import es.ulpgc.bigdata.SharedDataMartEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +23,19 @@ public class HazelcastDataMartManager implements DataMartManager {
     public HazelcastDataMartManager() {
         HazelcastInstance instance = Hazelcast.newHazelcastInstance();
         this.dataMart = instance.getMap("dataMart");
+    }
+
+    @Override
+    public boolean saveIntoFile(String path) {
+        try {
+            String json = new ObjectMapper().writeValueAsString(this.dataMart);
+            FileWriter fileWriter = new FileWriter(path);
+            fileWriter.write(json);
+            fileWriter.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     @Override

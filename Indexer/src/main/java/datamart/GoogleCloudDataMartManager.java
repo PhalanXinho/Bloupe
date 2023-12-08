@@ -45,6 +45,12 @@ public class GoogleCloudDataMartManager implements DataMartManager {
             appendToBlob(blob, filePath, appendedLine);
     }
 
+    @Override
+    public boolean saveIntoFile(String path) {
+        logger.info("GoogleCloudDataMart cant be saved into file.");
+        return false;
+    }
+
     private String getFilePathFromWord( String word ) {
         return word.charAt(0) + "/" + word.charAt(1) + "/" + word + ".txt";
     }

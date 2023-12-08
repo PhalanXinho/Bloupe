@@ -16,6 +16,7 @@ public class GoogleCloudDataLakeManager implements DataLakeManager {
     private final Bucket bucket;
 
     public GoogleCloudDataLakeManager() {
+
         Properties properties = new Properties();
         GoogleCredentials credentials;
         try {
@@ -27,8 +28,6 @@ public class GoogleCloudDataLakeManager implements DataLakeManager {
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         this.bucket = storage.get(properties.getProperty("DATA_LAKE_BUCKET_NAME"));
 
-
-        clear();
     }
 
     @Override
