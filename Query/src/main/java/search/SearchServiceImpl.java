@@ -21,11 +21,13 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public List<SearchResult> search(String word) {
+    public List<SearchResult> search(List<String> words) {
 
-        word = word.toLowerCase();
         List<SearchResult> result = new ArrayList<>();
-        List<SharedDataMartEntry> indexEntries = searchRepository.getSearchResult(word);
+        List<SharedDataMartEntry> indexEntries = new ArrayList<>();
+
+        for (String word : words)
+               indexEntries.addAll(searchRepository.getSearchResult(word.toLowerCase()));
 
         for (SharedDataMartEntry entry : indexEntries) {
             Optional<Book> book = bookRepository.findById(entry.bookId());

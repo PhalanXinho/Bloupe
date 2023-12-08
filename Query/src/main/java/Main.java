@@ -49,11 +49,9 @@ public class Main {
             logger.info("To: " + to);
 
             response.type("application/json");
-            List<SearchResult> searchResult = new ArrayList<>();
             List<String> words = new WordParser().parse(request.params(":word"));
 
-            for (String word : words)
-                searchResult.addAll(searchService.search(word));
+            List<SearchResult> searchResult = searchService.search(words);
 
             SearchResultFilter filter = new StreamSearchResultFilter(author, from, to);
             searchResult = filter.filter(searchResult);
