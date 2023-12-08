@@ -63,6 +63,14 @@ public class Controller {
             }
             logger.info("Added " + indexedWordResultList.size() + " results into the data mart");
 
+
+            if ( dataMartManager.saveIntoFile("datamart.json") ) {
+                logger.info("Data mart saved into datamart.json file");
+            }
+            else {
+                logger.error("There was an error saving data mart into datamart.json file");
+            }
+
         }
     }
 }

@@ -19,7 +19,7 @@ public class Controller {
     private final Logger logger = LoggerFactory.getLogger(Main.class);
 
     private final BookRepository bookRepository = new PostgreSQLBookRepository();
-    private final SearchRepository searchRepository = new HazelcastSearchRepository();
+    private final SearchRepository searchRepository = new HazelcastSearchRepository("datamart.json");
     private final SearchService searchService = new SearchServiceImpl(searchRepository, bookRepository);
 
     public void execute(){
