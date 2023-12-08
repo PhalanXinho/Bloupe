@@ -6,7 +6,6 @@ public class Main {
 
         Logger logger = LoggerFactory.getLogger(Main.class);
         logger.info("Starting the application...");
-        Controller controller = new Controller();
-        controller.start();
+        new Controller().start();
     }
 }
