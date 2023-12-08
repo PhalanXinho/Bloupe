@@ -74,6 +74,8 @@ public class Controller {
                 dataMartManager.addWordToDataMart(indexedWordResultList.get(i));
             }
             logger.info("Added " + indexedWordResultList.size() + " results into the data mart");
+
+
         }
     }
 }
