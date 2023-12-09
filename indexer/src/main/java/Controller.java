@@ -19,7 +19,7 @@ import java.util.List;
 public class Controller {
 
     private final Logger logger = LoggerFactory.getLogger(Controller.class);
-    private final DataMartManager dataMartManager = new HazelcastDataMartManager();
+    private final DataMartManager dataMartManager = new HazelcastDataMartManager("datamart.json");
     private final BookRepository bookRepository = new PostgreSQLBookRepository();
     private final DataLakeManager dataLakeManager = new GoogleCloudDataLakeManager();
     private final BooksConsumer booksConsumer = new ArtemisMQBooksConsumer();
@@ -64,7 +64,7 @@ public class Controller {
             logger.info("Added " + indexedWordResultList.size() + " results into the data mart");
 
 
-            if ( dataMartManager.saveIntoFile("datamart.json") ) {
+            if ( dataMartManager.saveIntoFile() ) {
                 logger.info("Data mart saved into datamart.json file");
             }
             else {

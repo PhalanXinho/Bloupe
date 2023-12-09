@@ -1,6 +1,6 @@
 package datamart;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -9,31 +9,50 @@ import es.ulpgc.bigdata.SharedDataMartEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HazelcastDataMartManager implements DataMartManager {
 
+    private final String filePath;
+
+    Logger logger = LoggerFactory.getLogger(HazelcastDataMartManager.class);
     private final IMap<Character, Map<Character, Map<String, List<SharedDataMartEntry>>>> dataMart;
 
-    public HazelcastDataMartManager() {
+    public HazelcastDataMartManager(String path) {
+        this.filePath = path;
         HazelcastInstance instance = Hazelcast.newHazelcastInstance();
         this.dataMart = instance.getMap("dataMart");
+
+        loadDataMartFromFile();
     }
 
+    private void loadDataMartFromFile() {
+        if ( this.dataMart.isEmpty() ) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                this.dataMart.putAll(mapper.readValue(new File(this.filePath), new TypeReference<>() {
+                }));
+                logger.info("Successfully loaded datamart from " + filePath + " file");
+            } catch (IOException e) {
+                logger.info("Datamart file not found, using empty datamart");
+            }
+        }
+    }
+
+
     @Override
-    public boolean saveIntoFile(String path) {
+    public boolean saveIntoFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(this.dataMart);
-            FileWriter fileWriter = new FileWriter(path);
+            FileWriter fileWriter = new FileWriter(this.filePath);
             fileWriter.write(json);
             fileWriter.close();
             return true;
         } catch (IOException e) {
+            logger.error(e.getMessage());
             return false;
         }
     }
