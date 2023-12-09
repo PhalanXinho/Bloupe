@@ -68,7 +68,6 @@
                         </manifest>
                     </archive>
                 </configuration>
-
                 <executions>
                     <execution>
                         <id>make-assembly</id>
@@ -81,31 +80,26 @@
             </plugin>
 
 
-
-
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <id>docker-build</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>docker</executable>
-                            <workingDirectory>${project.basedir}</workingDirectory>
-                            <arguments>
-                                <argument>build</argument>
-                                <argument>-t</argument>
-                                <argument>nagyjak1/bd:${project.artifactId}</argument>
-                                <argument>.</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.43.4</version>
+                <configuration>
+                    <authConfig>
+                        <username>nagyjak1</username>
+                        <password>Nysses-pixsi2-beprot</password>
+                    </authConfig>
+                    <images>
+                        <image>
+                            <name>nagyjak1/bd:${project.name}</name>
+                            <alias>${project.name}</alias>
+                            <build>
+                                <contextDir>${project.basedir}</contextDir>
+                            </build>
+                        </image>
+                    </images>
+                    <skipPom>true</skipPom>
+                </configuration>
             </plugin>
 
 
