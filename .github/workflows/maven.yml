@@ -20,7 +20,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn package -pl crawler,indexer,query,shared_module
+      run: |
+        ls
+        mvn package
     - name: Build Docker Images
       run: mvn docker:build -pl crawler,indexer,query
     - name: Push Docker Images
