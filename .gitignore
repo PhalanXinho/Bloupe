@@ -40,7 +40,5 @@ build/
 .idea
 .idea/*
 
-*/key.json
-
 dependency-reduced-pom.xml
 
