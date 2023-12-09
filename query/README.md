@@ -1,0 +1,1 @@
+    docker run -v datamart.json datamart.json -p 4567:4567 nagyjak1/bd:query
