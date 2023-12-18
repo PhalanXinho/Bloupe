@@ -43,7 +43,6 @@ public class Controller {
             logger.info("From: " + from);
             logger.info("To: " + to);
 
-            response.type("application/json");
             List<String> words = new WordParser().parse(request.params(":word"));
 
             List<SearchResult> searchResult = searchService.search(words);
