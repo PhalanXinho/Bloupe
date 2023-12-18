@@ -1,0 +1,15 @@
+services:
+  query:
+    image: nagyjak1/bd:query
+    ports:
+      - 4567:4567
+    volumes:
+      - data_mart_nfs:/datamart
+
+
+volumes:
+  data_mart_nfs:
+    driver_opts:
+      type: "nfs"
+      o: "addr=167.172.243.66,rw"
+      device: ":/mnt/nfs_share"
