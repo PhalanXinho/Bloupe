@@ -13,6 +13,6 @@ public class Main {
 
         TimerTask downloadTask = new DownloadTask();
         Timer timer = new Timer();
-        timer.schedule(downloadTask, 0, 1000*60*5);
+        timer.schedule(downloadTask, 0, 5*1000);
     }
 }
