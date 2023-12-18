@@ -13,7 +13,10 @@ public class DownloadTask extends TimerTask {
         if (count == 2000) System.exit(0);
         logger.info("Starting the download task...");
         for (int i = 0; i < 5; i++) {
-            if (!controller.run()) i--;
+            if (!controller.run()) {
+                i--;
+                continue;
+            }
             count++;
         }
         logger.info("Download task finished");

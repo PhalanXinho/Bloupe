@@ -46,7 +46,7 @@ public class GoogleCloudDataMartManager implements DataMartManager {
     }
 
     @Override
-    public boolean saveIntoFile(String path) {
+    public boolean saveIntoFile() {
         logger.info("GoogleCloudDataMart cant be saved into file.");
         return false;
     }

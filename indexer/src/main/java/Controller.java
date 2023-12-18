@@ -15,18 +15,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Controller {
-
+    private final Timer timer = new Timer();
     private final Logger logger = LoggerFactory.getLogger(Controller.class);
-    private final DataMartManager dataMartManager = new HazelcastDataMartManager();
+    private final DataMartManager dataMartManager = new HazelcastDataMartManager("datamart.json");
     private final BookRepository bookRepository = new PostgreSQLBookRepository();
     private final DataLakeManager dataLakeManager = new GoogleCloudDataLakeManager();
     private final BooksConsumer booksConsumer = new ArtemisMQBooksConsumer();
     private final Indexer indexer = new Indexer();
 
     public void start() {
-
         while (true) {
 
             String filePath = booksConsumer.consume();
@@ -55,16 +56,20 @@ public class Controller {
             List<IndexedWordResult> indexedWordResultList = indexer.invertedIndex(content, book);
             logger.info("Indexing process finished successfully");
 
+            WordCounterTimerTask wordCounterTimerTask = new WordCounterTimerTask();
+            timer.schedule(wordCounterTimerTask, 0, 60000);
+
             logger.info("Adding " + indexedWordResultList.size() + " results into the data mart");
             for (int i = 0; i < indexedWordResultList.size(); i++) {
                 if (i % 250 == 0)
                     logger.info(i + " out of " + indexedWordResultList.size() + " words added into data mart");
                 dataMartManager.addWordToDataMart(indexedWordResultList.get(i));
+                wordCounterTimerTask.increaseCount();
             }
             logger.info("Added " + indexedWordResultList.size() + " results into the data mart");
 
 
-            if ( dataMartManager.saveIntoFile("datamart.json") ) {
+            if ( dataMartManager.saveIntoFile() ) {
                 logger.info("Data mart saved into datamart.json file");
             }
             else {
