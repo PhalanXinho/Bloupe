@@ -28,6 +28,9 @@ public class Controller {
     private final Indexer indexer = new Indexer();
 
     public void start() {
+        WordCounterTimerTask wordCounterTimerTask = new WordCounterTimerTask();
+        timer.schedule(wordCounterTimerTask, 0, 60000);
+
         while (true) {
 
             String filePath = booksConsumer.consume();
@@ -55,9 +58,6 @@ public class Controller {
             logger.info("Starting the indexing process...");
             List<IndexedWordResult> indexedWordResultList = indexer.invertedIndex(content, book);
             logger.info("Indexing process finished successfully");
-
-            WordCounterTimerTask wordCounterTimerTask = new WordCounterTimerTask();
-            timer.schedule(wordCounterTimerTask, 0, 60000);
 
             logger.info("Adding " + indexedWordResultList.size() + " results into the data mart");
             for (int i = 0; i < indexedWordResultList.size(); i++) {

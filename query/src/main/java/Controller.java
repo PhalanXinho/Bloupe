@@ -31,7 +31,7 @@ public class Controller {
             response.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         });
 
-        Spark.get("/document/:word", "application/json", (request, response) -> {
+        Spark.get("/documents/:word", "application/json", (request, response) -> {
 
             String from = request.queryParams("from");
             String to = request.queryParams("to");
