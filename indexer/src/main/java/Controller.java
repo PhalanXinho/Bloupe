@@ -73,7 +73,7 @@ public class Controller {
                 logger.info("Data mart saved into datamart.json file");
             }
             else {
-                logger.error("There was an error saving data mart into datamart.json file");
+                logger.error("There was an error saving data mart into datamart.json file.");
             }
 
         }
